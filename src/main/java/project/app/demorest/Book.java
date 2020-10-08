@@ -8,6 +8,7 @@ public class Book {
 	private String title;
 	private String author;
 	private float score;
+	
 	public String getTitle() {
 		return title;
 	}

@@ -25,7 +25,7 @@ public class BookRepository {
 	public List<Book> getBooks(){
 		List<Book> books = new ArrayList<Book>();
 		String sql = "select * from books";
-		
+
 		try {
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(sql);
@@ -46,9 +46,9 @@ public class BookRepository {
 	}
 	
 	public Book getBook(String title) {
-		Book b = null;
-		String sql = "select * from books where title=" + title;
-		
+		Book b = new Book();
+		String sql = "select * from books where title='" + title + "'";
+
 		try {
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(sql);
@@ -58,6 +58,27 @@ public class BookRepository {
 				b.setTitle(rs.getString(2));
 				b.setAuthor(rs.getString(3));
 				b.setScore(rs.getFloat(4));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return b;
+	}
+	
+	public Book getBookId(int id) {
+		Book b = new Book();
+		String sql = "select * from books where idbooks=" + id;
+		
+		try {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			
+			if(rs.next()) {
+				b.setId(rs.getInt(1));
+				b.setTitle(rs.getString("title"));
+				b.setAuthor(rs.getString("author"));
+				b.setScore(rs.getFloat("score"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -78,7 +99,33 @@ public class BookRepository {
 			st.setFloat(4, newBook.getScore());
 			st.executeUpdate();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
+	
+	public void update(Book newBook) {
+		
+		String sql = "update books set score=? where title=?";
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setFloat(1, newBook.getScore());
+			st.setString(2, newBook.getTitle());
+			st.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void delete(String title) {
+		String sql = "delete from books where title=?";
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, title);
+			st.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
